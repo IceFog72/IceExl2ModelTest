@@ -24,7 +24,8 @@ from exllamav2 import (
 
 # Models to test
 model_base = "E:\\models"
-variants = ["Mistral-7B-Instruct-v0.3-exl2-4.25", "M7-7b-4.0bpw-h6-exl2", "IceSakeV12RP-7b-4.2bpw"]
+variants = ["Mistral-7B-Instruct-v0.3-exl2-4.25"]
+#variants = ["Mistral-7B-Instruct-v0.3-exl2-4.25", "M7-7b-4.0bpw-h6-exl2", "IceSakeV12RP-7b-4.2bpw"]
 
 # Custom parameters for each model variant
 model_params = {
@@ -323,10 +324,14 @@ for variant in variants:
 
 current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-output_file = os.path.join(script_dir, f"detailed_outputs_{variant}_{qa_split}_{current_datetime}.json")
+results_dir_path = os.path.join(script_dir, "results_dir")
+if not os.path.exists(os.path.join(script_dir, "results_dir")):
+    os.makedirs(results_dir_path, exist_ok=True)
+
+output_file = os.path.join(results_dir_path, f"detailed_outputs_{variant}_{qa_split}_{current_datetime}.json")
 with open(output_file, "w") as f:
     json.dump(all_outputs, f, indent=4)
 
-results_path = os.path.join(script_dir, f"results_model_comparison_{qa_split}_{current_datetime}.csv")
+results_path = os.path.join(results_dir_path, f"results_model_comparison_{qa_split}_{current_datetime}.csv")
 with open(results_path, "w") as f:
     f.write(results)

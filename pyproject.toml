@@ -11,7 +11,7 @@ build-backend = "setuptools.build_meta"
 py-modules = []
 
 [project]
-name = "tabbyAPI"
+name = "IceExl2ModelTest"
 version = "0.0.1"
 description = "An OAI compatible exllamav2 API that's both lightweight and fast"
 requires-python = ">=3.10"
@@ -28,6 +28,9 @@ dependencies = [
     "tokenizers",
     "lm-format-enforcer >= 0.9.6",
     "aiofiles",
+    "datasets",
+    "pybind11>=2.12",
+    "tqdm",
 
     # TODO: Maybe move these to a downloader feature?
     "aiohttp",
@@ -35,7 +38,7 @@ dependencies = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/theroyallab/tabbyAPI"
+"Homepage" = "https://github.com/IceFog72/IceExl2ModelTest"
 
 [project.optional-dependencies]
 extras = [
