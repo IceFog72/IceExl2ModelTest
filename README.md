@@ -22,4 +22,4 @@ I'm 0 in python, and this test only for comparing models. Test results are not i
 
 Edit and run exl2_eval.py
 
-TO do: Best temp finder for model.
+To do: Best temp finder for model.
