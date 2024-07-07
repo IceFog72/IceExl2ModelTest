@@ -20,5 +20,5 @@ It's last version before mandatory flash attention in v0.1 ( yea you can disable
 
 I'm 0 in python, and this test only for comparing models. Test results are not intended to be compared with any other tests.
 
-
+Edit and run exl2_eval.py
 
