@@ -9,6 +9,7 @@ from urllib.request import urlretrieve
 import zipfile
 from tqdm import tqdm
 import random
+from datetime import datetime
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -304,10 +305,12 @@ for variant in variants:
     results += ";".join([variant] + cat_results) + "\n"
     print(results)
 
-output_file = os.path.join(script_dir, f"detailed_outputs_{variant}_{qa_split}.json")
+current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+output_file = os.path.join(script_dir, f"detailed_outputs_{variant}_{qa_split}_{current_datetime}.json")
 with open(output_file, "w") as f:
     json.dump(all_outputs, f, indent=4)
 
-results_path = os.path.join(script_dir, f"results_model_comparison_{qa_split}.csv")
+results_path = os.path.join(script_dir, f"results_model_comparison_{qa_split}_{current_datetime}.csv")
 with open(results_path, "w") as f:
     f.write(results)
