@@ -36,7 +36,7 @@ model_params = {
 
 # Prompt format options
 prompt_formats = ["none", "Alpaca", "ChatML", "Llama3"]
-selected_format = "Alpaca"
+selected_format = "none"
 
 gpu_split = None  # auto
 
