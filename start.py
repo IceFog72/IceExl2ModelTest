@@ -7,7 +7,7 @@ import pathlib
 import platform
 import subprocess
 import sys
-from common.args import init_argparser
+from common.args import convert_args_to_dict, init_argparser
 
 
 def get_user_choice(question: str, options_dict: dict):
@@ -86,7 +86,7 @@ def get_install_features(lib_name: str = None):
         # Exit if using AMD and Windows
         if platform.system() == "Windows":
             print(
-              
+                "ERROR: TabbyAPI does not support AMD and Windows. "
                 "Please use Linux and ROCm 6.0. Exiting."
             )
             sys.exit(0)
@@ -140,3 +140,4 @@ if __name__ == "__main__":
         install_command = f"pip install -U .{features}"
         print(f"Running install command: {install_command}")
         subprocess.run(install_command.split(" "))
+

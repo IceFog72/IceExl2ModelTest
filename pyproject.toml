@@ -19,7 +19,9 @@ dependencies = [
     "fastapi >= 0.110.0",
     "pydantic >= 2.0.0",
     "PyYAML",
+    "numpy<2.0",
     "rich",
+    "datasets",
     "uvicorn >= 0.28.1",
     "jinja2 >= 3.0.0",
     "loguru",
@@ -28,9 +30,6 @@ dependencies = [
     "tokenizers",
     "lm-format-enforcer >= 0.9.6",
     "aiofiles",
-    "datasets",
-    "pybind11>=2.12",
-    "tqdm",
 
     # TODO: Maybe move these to a downloader feature?
     "aiohttp",
