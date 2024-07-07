@@ -6,7 +6,7 @@ conda create -n IceExl2ModelTest python=3.11
 conda activate IceExl2ModelTest
 ```
 
-cd ...
+cd ... (to folder)
 
 ```
 conda install -c "nvidia/label/cuda-12.2.2" cuda
