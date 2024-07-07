@@ -4,6 +4,7 @@ exl2 model tester
 ```
 conda create -n IceExl2ModelTest python=3.11
 conda activate IceExl2ModelTest
+```
 
 cd ...
 
