@@ -25,4 +25,3 @@ Edit config.py and run main.py
 
 exl2_eval.py - old all in 1 version.
 
-To do: Best temp finder for model.
