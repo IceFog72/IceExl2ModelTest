@@ -2,13 +2,12 @@ import os
 
 # Configuration
 MODEL_BASE = "E:\\models"
-VARIANTS = ["Storm-7B-4.2bpw","dolphin-2.9.3-mistral-7B-32k-4.2bpw-exl2","IceSakeV12RP-7b-4.2bpw"]
+VARIANTS = ["Storm-7B-4.2bpw","IceSakeV12RP-7b-4.2bpw"]
 MODEL_PARAMS = {
-    "Storm-7B-4.2bpw": {"temp": 1, "max_seq_len": 2048, "rotary_embedding_base": 40000.0},
-    "dolphin-2.9.3-mistral-7B-32k-4.2bpw-exl2": {"temp": 1, "max_seq_len": 2048, "rotary_embedding_base": 100000.0},
-    "IceSakeV12RP-7b-4.2bpw": {"temp": 1, "max_seq_len": 2048, "rotary_embedding_base": 40000.0}
+    "Storm-7B-4.2bpw": { "max_seq_len": 2048, "rotary_embedding_base": 40000.0},
+    "IceSakeV12RP-7b-4.2bpw": {"max_seq_len": 2048, "rotary_embedding_base": 40000.0}
 }
-
+    #"dolphin-2.9.3-mistral-7B-32k-4.2bpw-exl2": {"max_seq_len": 2048, "rotary_embedding_base": 100000.0},
 PROMPT_FORMAT = "none"
 GPU_SPLIT = None  # auto
 QA_SET = "cais/mmlu"

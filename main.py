@@ -1,5 +1,6 @@
 import os
 import gc
+import time
 import json
 import torch
 from datetime import datetime
@@ -22,7 +23,7 @@ def run_evaluation(model, tokenizer, datasets, progress, task):
     for dataset_name, dataset in datasets.items():
         sys.stdout.write(f"\rEvaluating on {dataset_name}...")
         sys.stdout.flush()
-        answer_logits = [tokenizer.tokenizer.encode(f"{ch}")[-1] for ch in "ABCD"]
+        answer_logits = [tokenizer.tokenizer.encode(f"The answer is: {ch}")[-1] for ch in "ABCD"]
         if dataset_name in ["Winogrande", "MuSR"]:
             answer_logits = answer_logits[:2]  # Only A and B for Winogrande and MuSR
         score, outputs = evaluate_model(model, tokenizer, dataset["prompts"], dataset["labels"], answer_logits)
@@ -66,11 +67,12 @@ def main():
             gc.collect()
             torch.cuda.empty_cache()
             gc.collect()
-
+            time.sleep(2)
             model, cache, tokenizer = get_model(MODEL_BASE, variant, GPU_SPLIT, 1, MODEL_PARAMS)
             
             results = run_evaluation(model, tokenizer, datasets, progress, overall_task)
             all_results[variant] = results
+
 
     analyze_results(all_results)
 
