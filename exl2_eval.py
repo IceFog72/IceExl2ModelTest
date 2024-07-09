@@ -24,13 +24,13 @@ from exllamav2 import (
 
 # Models to test
 model_base = "E:\\models"
-variants = ["Mistral-7B-Instruct-v0.3-exl2-4.25"]
+variants = ["Storm-7B-4.2bpw","dolphin-2.9.3-mistral-7B-32k-4.2bpw-exl2","IceSakeV12RP-7b-4.2bpw"]
 #variants = ["Mistral-7B-Instruct-v0.3-exl2-4.25", "M7-7b-4.0bpw-h6-exl2", "IceSakeV12RP-7b-4.2bpw"]
 
 # Custom parameters for each model variant
 model_params = {
-    "Mistral-7B-Instruct-v0.3-exl2-4.25": {"temp": 0.8, "max_seq_len": 2048, "rotary_embedding_base": 100000.0},
-    "M7-7b-4.0bpw-h6-exl2": {"temp": 1, "max_seq_len": 2048, "rotary_embedding_base": 40000.0},
+    "Storm-7B-4.2bpw": {"temp": 1, "max_seq_len": 2048, "rotary_embedding_base": 40000.0},
+    "dolphin-2.9.3-mistral-7B-32k-4.2bpw-exl2": {"temp": 1, "max_seq_len": 2048, "rotary_embedding_base": 100000.0},
     "IceSakeV12RP-7b-4.2bpw": {"temp": 1, "max_seq_len": 2048, "rotary_embedding_base": 40000.0}
     # Add other models with their specific parameters here
 }
