@@ -25,3 +25,6 @@ Edit config.py and run main.py
 
 exl2_eval.py - old all in 1 version.
 
+If you editing cde with promt- dont forget dell already generated questions from cache_dir.
+
+Feedback  [ST Discord Thread](https://discord.com/channels/1100685673633153084/1259572507157991474)
