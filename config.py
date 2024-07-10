@@ -5,14 +5,16 @@ MODEL_BASE = "E:\\models"
 VARIANTS = ["Storm-7B-4.2bpw","IceSakeV12RP-7b-4.2bpw"]
 MODEL_PARAMS = {
     "Storm-7B-4.2bpw": { "max_seq_len": 2048, "rotary_embedding_base": 40000.0},
-    "IceSakeV12RP-7b-4.2bpw": {"max_seq_len": 2048, "rotary_embedding_base": 40000.0}
+    "IceSakeV12RP-7b-4.2bpw": {"max_seq_len": 2048, "rotary_embedding_base": 40000.0},
+    "IceLemonTeaRP-32k-7b-4.2bpw-h6-exl2": {"max_seq_len": 2048, "rotary_embedding_base": 40000.0},
+    "Kunoichi-DPO-v2-7B-exl2-4_25": {"max_seq_len": 2048, "rotary_embedding_base": 40000.0}
 }
     #"dolphin-2.9.3-mistral-7B-32k-4.2bpw-exl2": {"max_seq_len": 2048, "rotary_embedding_base": 100000.0},
 PROMPT_FORMAT = "none"
 GPU_SPLIT = None  # auto
 QA_SET = "cais/mmlu"
 QA_SPLIT = "test"
-MMLU_CATEGORIES = ["formal_logic"]
+MMLU_CATEGORIES = ["abstract_algebra","formal_logic", "high_school_biology", "high_school_mathematics", "high_school_us_history","human_sexuality","logical_fallacies", "philosophy"]
 # MMLU_CATEGORIES = [
 #     "abstract_algebra", "anatomy", "astronomy", "business_ethics", "clinical_knowledge",
 #     "college_biology", "college_chemistry", "college_computer_science", "college_mathematics",

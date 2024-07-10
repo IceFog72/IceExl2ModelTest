@@ -26,7 +26,7 @@ def cache_prompts(filename, loader_func, *args):
         return prompts
 
 def get_dataset(ds_name, category, split, cache_dir, seed_key):
-    print(f" -- Loading dataset: {ds_name}/{category}...")
+    print(f"\r\n -- Loading dataset: {ds_name}/{category}...")
     return load_dataset(ds_name, category, split=split, cache_dir=cache_dir).shuffle(seed=seed_key)
 
 def format_mmlu_question(question, options, answer, selected_format):
@@ -35,40 +35,48 @@ def format_mmlu_question(question, options, answer, selected_format):
         text = f"Question:\n{question}\n\nChoices:\n"
         for i, o in enumerate(options):
             text += f"{clabels[i]}: {o}\n"
-        text += f"\nAnswer: "
+        text += f"\nAnswer is: "
     # Add other format options here if needed
     return text
 
 def load_mmlu(categories, questions_per_category, qa_set, qa_split, cache_dir, seed_key, selected_format):
     prompts_dict = {}
-    for category in tqdm(categories, desc="Loading datasets"):
-        dataset = get_dataset(qa_set, category, qa_split, cache_dir, seed_key)
-        rows = dataset.select(range(questions_per_category))
+    with tqdm(total=len(categories), desc="Loading MMLU datasets") as pbar:
+        for category in categories:
+            dataset = get_dataset(qa_set, category, qa_split, cache_dir, seed_key)
+            rows = dataset.select(range(questions_per_category))
 
-        prompts = [format_mmlu_question(row["question"], row["choices"], row["answer"], selected_format) for row in rows]
-        labels = [row["answer"] for row in rows]
+            prompts = [format_mmlu_question(row["question"], row["choices"], row["answer"], selected_format) for row in rows]
+            labels = [row["answer"] for row in rows]
 
-        prompts_dict[category] = {"prompts": prompts, "labels": labels}
+            prompts_dict[category] = {"prompts": prompts, "labels": labels}
+            pbar.update(1)
+            pbar.set_postfix({"Current category": category})
 
     return prompts_dict
 
 def format_winogrande_question(sentence, option1, option2, answer, selected_format):
     if selected_format == "none":
-        text = "Fill in the blank (represented by _) in the following sentence with the best choice:\n"
+        text = "Fill in the blank in the following sentence with correct choice:\n"
         text += sentence
         text += "\n\nChoices:\n"
         text += f"A: {option1}\n"
         text += f"B: {option2}\n"
-        text += "\nAnswer: "
+        text += "\nAnswer is: "
     # Add other format options here if needed
     return text
 
 def load_winogrande(questions_per_category, cache_dir, seed_key, selected_format):
-    print(" -- Loading Winogrande dataset...")
+    print("Loading Winogrande dataset...")
     dataset = load_dataset("winogrande", "winogrande_xl", split="validation", cache_dir=cache_dir, trust_remote_code=True).shuffle(seed=seed_key).select(range(questions_per_category))
     
-    prompts = [format_winogrande_question(row["sentence"], row["option1"], row["option2"], row["answer"], selected_format) for row in dataset]
-    labels = [int(row["answer"]) - 1 for row in dataset]
+    prompts = []
+    labels = []
+    with tqdm(total=len(dataset), desc="Processing Winogrande questions") as pbar:
+        for row in dataset:
+            prompts.append(format_winogrande_question(row["sentence"], row["option1"], row["option2"], row["answer"], selected_format))
+            labels.append(int(row["answer"]) - 1)
+            pbar.update(1)
 
     return {"prompts": prompts, "labels": labels}
 
@@ -87,37 +95,42 @@ def download_musr(cache_dir):
 
 def format_musr_question(context, question, answer, selected_format):
     if selected_format == "none":
-        text = f"{context}\n\nQuestion: This statement - '{question}' is:\n\nChoices:\nA: True\nB: False\n\nAnswer: "
+        text = f"{context}\n\nQuestion: This statement - '{question}' is:\n\nChoices:\nA: True\nB: False\n\nThink step-by-step and answer only with the correct letter: "
     # Add other format options here if needed
     return text
 
 def load_musr(questions_per_category, cache_dir, seed_key, selected_format):
     download_musr(cache_dir)
-    print(" -- Loading MuSR dataset...")
+    print("Loading MuSR dataset...")
 
     musr_dataset_path = os.path.join(cache_dir, "MuSR", "Multi-Step-Deductive-Reasoning-Over-Natural-Language-main", "dataset")
     files = [f"Depth{i}/PARARULE_Plus_Depth{i}_shuffled_test.jsonl" for i in range(2, 6)]
 
     combined_questions = []
-    for file in files:
-        with open(os.path.join(musr_dataset_path, file), 'r') as f:
-            for line in f:
-                entry = json.loads(line)
-                for q in entry["questions"]:
-                    combined_questions.append({
-                        "context": entry["context"],
-                        "question": q["text"],
-                        "answer": q["label"]
-                    })
+    with tqdm(total=len(files), desc="Reading MuSR files") as pbar:
+        for file in files:
+            with open(os.path.join(musr_dataset_path, file), 'r') as f:
+                for line in f:
+                    entry = json.loads(line)
+                    for q in entry["questions"]:
+                        combined_questions.append({
+                            "context": entry["context"],
+                            "question": q["text"],
+                            "answer": q["label"]
+                        })
+            pbar.update(1)
+            pbar.set_postfix({"Current file": file})
 
     random.seed(seed_key)
     random.shuffle(combined_questions)
 
     prompts = []
     labels = []
-    for q in combined_questions[:questions_per_category]:
-        prompt = format_musr_question(q["context"], q["question"], q["answer"], selected_format)
-        prompts.append(prompt)
-        labels.append(0 if q["answer"].lower() == "true" else 1)  # 0 for True, 1 for False
+    with tqdm(total=min(len(combined_questions), questions_per_category), desc="Processing MuSR questions") as pbar:
+        for q in combined_questions[:questions_per_category]:
+            prompt = format_musr_question(q["context"], q["question"], q["answer"], selected_format)
+            prompts.append(prompt)
+            labels.append(0 if q["answer"].lower() == "true" else 1)  # 0 for True, 1 for False
+            pbar.update(1)
 
     return {"prompts": prompts, "labels": labels}

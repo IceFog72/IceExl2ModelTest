@@ -23,7 +23,7 @@ def run_evaluation(model, tokenizer, datasets, progress, task):
     for dataset_name, dataset in datasets.items():
         sys.stdout.write(f"\rEvaluating on {dataset_name}...")
         sys.stdout.flush()
-        answer_logits = [tokenizer.tokenizer.encode(f"The answer is: {ch}")[-1] for ch in "ABCD"]
+        answer_logits = [tokenizer.tokenizer.encode(f"{ch}")[-1] for ch in "ABCD"]
         if dataset_name in ["Winogrande", "MuSR"]:
             answer_logits = answer_logits[:2]  # Only A and B for Winogrande and MuSR
         score, outputs = evaluate_model(model, tokenizer, dataset["prompts"], dataset["labels"], answer_logits)
@@ -59,7 +59,7 @@ def main():
     ) as progress:
         overall_task = progress.add_task("[cyan]Overall Progress", total=len(VARIANTS) * len(datasets))
         for variant in VARIANTS:
-            console.print(f"\n[bold green]Evaluating model: {variant}")
+            console.print(f"\r\n[bold green]Evaluating model: {variant}")
             model = None
             cache = None
             tokenizer = None
@@ -69,10 +69,8 @@ def main():
             gc.collect()
             time.sleep(2)
             model, cache, tokenizer = get_model(MODEL_BASE, variant, GPU_SPLIT, 1, MODEL_PARAMS)
-            
             results = run_evaluation(model, tokenizer, datasets, progress, overall_task)
             all_results[variant] = results
-
 
     analyze_results(all_results)
 
@@ -80,6 +78,7 @@ def main():
     output_file = os.path.join(RESULTS_DIR, f"detailed_outputs_{QA_SPLIT}_{current_datetime}.json")
     with open(output_file, "w") as f:
         json.dump(all_results, f, indent=4)
+
 
     console.print(f"[green]Detailed results saved to {output_file}")
 
@@ -104,16 +103,35 @@ def analyze_results(results):
     
     console.print(table)
     
+    # Format DataFrame to 4 decimal places
+    df_formatted = df.map(lambda x: f"{x:.4f}" if pd.notnull(x) else '')
+    
+    # Save results to CSV
+    results_path = os.path.join(RESULTS_DIR, f"results_model_comparison_{QA_SPLIT}_{current_datetime}.csv")
+    df_formatted.to_csv(results_path)
+    console.print(f"[green]Results saved to {results_path}")
+    
     # Check if there's any numeric data to plot
     if df.notna().any().any():
-        plt.figure(figsize=(12, 6))
-        df.plot(kind='bar')
-        plt.title("Model Performance Across Datasets")
-        plt.xlabel("Models")
-        plt.ylabel("Score")
-        plt.legend(title="Datasets")
+        plt.figure(figsize=(14, 8))  # Increased figure size
+        ax = df.plot(kind='bar')
+        plt.title("Model Performance Across Datasets", fontsize=16)
+        plt.xlabel("Models", fontsize=12)
+        plt.ylabel("Score", fontsize=12)
+        
+        # Rotate x-axis labels for better readability
+        plt.xticks(rotation=45, ha='right')
+        
+        # Move legend outside of the plot
+        plt.legend(title="Datasets", bbox_to_anchor=(1.05, 1), loc='upper left')
+        
+        # Adjust layout to prevent cutting off labels
         plt.tight_layout()
-        plt.savefig(os.path.join(RESULTS_DIR, f"model_performance_{current_datetime}.png"))
+        
+        # Add some padding to the right side of the plot for the legend
+        plt.subplots_adjust(right=0.75)
+        
+        plt.savefig(os.path.join(RESULTS_DIR, f"model_performance_{current_datetime}.png"), dpi=300, bbox_inches='tight')
         console.print("[green]Performance plot saved as model_performance.png")
     else:
         console.print("[yellow]Warning: No numeric data available for plotting.")
