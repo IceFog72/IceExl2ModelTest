@@ -1,6 +1,6 @@
 # IceExl2ModelTest
 
-exl2 model tester (MMLU,Winogrande,MuSR)
+exl2 model tester (MMLU,Winogrande,MuSR,MMLU_PRO)
 
 ```
 conda create -n IceExl2ModelTest python=3.11
