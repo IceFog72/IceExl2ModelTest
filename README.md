@@ -25,7 +25,7 @@ Edit config.py and run main.py
 
 exl2_eval.py - old all in 1 version.
 
-If you editing cde with promt- dont forget dell already generated questions from cache_dir.
+If you editing code teleted to promt- don't forget delete already generated questions from cache_dir.
 
 ![image](https://github.com/IceFog72/IceExl2ModelTest/assets/164350516/d3f80163-17c7-4137-b5c7-0ff40c3effb2)
 
