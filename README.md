@@ -27,4 +27,7 @@ exl2_eval.py - old all in 1 version.
 
 If you editing cde with promt- dont forget dell already generated questions from cache_dir.
 
+![image](https://github.com/IceFog72/IceExl2ModelTest/assets/164350516/d3f80163-17c7-4137-b5c7-0ff40c3effb2)
+
+
 Feedback  [ST Discord Thread](https://discord.com/channels/1100685673633153084/1259572507157991474)
