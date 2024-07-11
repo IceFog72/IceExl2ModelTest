@@ -7,7 +7,10 @@ import hashlib
 from tqdm import tqdm
 from datasets import load_dataset
 from urllib.request import urlretrieve
+from collections import defaultdict
 import zipfile
+import re
+import unicodedata
 
 def generate_hash(*args):
     hash_obj = hashlib.sha256()
@@ -32,9 +35,9 @@ def get_dataset(ds_name, category, split, cache_dir, seed_key):
 def format_mmlu_question(question, options, answer, selected_format):
     clabels = "ABCD"
     if selected_format == "none":
-        text = f"Question:\n{question}\n\nChoices:\n"
+        text = f"Question:\n{clean_unicode(question)}\n\nOptions:\n"
         for i, o in enumerate(options):
-            text += f"{clabels[i]}: {o}\n"
+            text += f"{clabels[i]}: {clean_unicode(o)}\n"
         text += f"\nAnswer is: "
     # Add other format options here if needed
     return text
@@ -58,11 +61,11 @@ def load_mmlu(categories, questions_per_category, qa_set, qa_split, cache_dir, s
 def format_winogrande_question(sentence, option1, option2, answer, selected_format):
     if selected_format == "none":
         text = "Fill in the blank in the following sentence with correct choice:\n"
-        text += sentence
+        text += clean_unicode(sentence)
         text += "\n\nChoices:\n"
         text += f"A: {option1}\n"
         text += f"B: {option2}\n"
-        text += "\nAnswer is: "
+        text += "\nAnswer is:\n"
     # Add other format options here if needed
     return text
 
@@ -95,7 +98,7 @@ def download_musr(cache_dir):
 
 def format_musr_question(context, question, answer, selected_format):
     if selected_format == "none":
-        text = f"{context}\n\nQuestion: This statement - '{question}' is:\n\nChoices:\nA: True\nB: False\n\nThink step-by-step and answer only with the correct letter: "
+        text = f"{clean_unicode(context)}\n\nQuestion: This statement - '{clean_unicode(question)}' is:\n\nChoices:\nA: True\nB: False\n\nThink step-by-step and answer only with the correct letter:\n"
     # Add other format options here if needed
     return text
 
@@ -134,3 +137,75 @@ def load_musr(questions_per_category, cache_dir, seed_key, selected_format):
             pbar.update(1)
 
     return {"prompts": prompts, "labels": labels}
+
+def clean_unicode(text):
+    # Step 1: Normalize Unicode characters
+    text = unicodedata.normalize('NFKC', text)
+    
+    # Step 2: Replace specific problematic characters
+    replacements = {
+        '\u2013': '-',  # en dash
+        '\u2014': '-',  # em dash
+        '\u2018': "'",  # left single quotation mark
+        '\u2019': "'",  # right single quotation mark
+        '\u201c': '"',  # left double quotation mark
+        '\u201d': '"',  # right double quotation mark
+    }
+    for code, char in replacements.items():
+        text = text.replace(code, char)
+    
+    # Step 3: Remove any remaining non-ASCII characters
+    text = re.sub(r'[^\x00-\x7F]+', '', text)
+    
+    return text
+
+def load_mmlu_pro(categories, questions_per_category, cache_dir, seed_key, selected_format):
+    prompts_dict = defaultdict(lambda: {"prompts": [], "labels": []})
+    
+    # Load the entire dataset
+    dataset = get_dataset("TIGER-Lab/MMLU-Pro", "default", "test", cache_dir, seed_key)
+    dataset = dataset.shuffle(seed=seed_key)  # Shuffle the dataset
+    
+    # Count questions per category
+    category_counts = defaultdict(int)
+    
+    with tqdm(total=len(dataset), desc="Loading MMLU-Pro datasets") as pbar:
+        for row in dataset:
+            category = row["category"]
+            
+            # Skip if we've already collected enough questions for this category
+            if category_counts[category] >= questions_per_category:
+                pbar.update(1)
+                continue
+            
+            prompt = format_mmlu_pro_question(row["question"], row["options"], row["answer_index"], selected_format)
+            label = row["answer_index"]  # Use answer_index instead of answer
+            
+            prompts_dict[category]["prompts"].append(prompt)
+            prompts_dict[category]["labels"].append(label)
+            
+            category_counts[category] += 1
+            pbar.update(1)
+            pbar.set_postfix({"Current category": category, "Count": category_counts[category]})
+            
+            # Break if we've collected enough questions for all categories
+            if all(count >= questions_per_category for count in category_counts.values()):
+                break
+    
+    # Remove any categories that didn't meet the required question count
+    prompts_dict = {k: v for k, v in prompts_dict.items() if len(v["prompts"]) == questions_per_category}
+    
+    print(f"Loaded categories: {', '.join(prompts_dict.keys())}")
+    print(f"Questions per category: {questions_per_category}")
+    
+    return dict(prompts_dict)
+
+def format_mmlu_pro_question(question, options, answer, selected_format):
+    clabels = "ABCDEFGHIJKLMNOP"
+    if selected_format == "none":
+        text = f"Question:\n{clean_unicode(question)}\nThink step-by-step and answer only with the correct letter.\nChoices:\n"
+        for i, o in enumerate(options):
+            text += f"{clabels[i]}: {clean_unicode(o)}\n"
+        text += f"\nAnswer is:\n"
+    # Add other format options here if needed
+    return text

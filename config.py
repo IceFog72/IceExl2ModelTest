@@ -7,14 +7,17 @@ MODEL_PARAMS = {
     "Storm-7B-4.2bpw": { "max_seq_len": 2048, "rotary_embedding_base": 40000.0},
     "IceSakeV12RP-7b-4.2bpw": {"max_seq_len": 2048, "rotary_embedding_base": 40000.0},
     "IceLemonTeaRP-32k-7b-4.2bpw-h6-exl2": {"max_seq_len": 2048, "rotary_embedding_base": 40000.0},
-    "Kunoichi-DPO-v2-7B-exl2-4_25": {"max_seq_len": 2048, "rotary_embedding_base": 40000.0}
+    "Kunoichi-DPO-v2-7B-exl2-4_25": {"max_seq_len": 2048, "rotary_embedding_base": 40000.0},
+    #"dolphin-2.9.3-mistral-7B-32k-4.2bpw-exl2": {"max_seq_len": 2048, "rotary_embedding_base": 100000.0}
 }
-    #"dolphin-2.9.3-mistral-7B-32k-4.2bpw-exl2": {"max_seq_len": 2048, "rotary_embedding_base": 100000.0},
+
 PROMPT_FORMAT = "none"
 GPU_SPLIT = None  # auto
 QA_SET = "cais/mmlu"
 QA_SPLIT = "test"
-MMLU_CATEGORIES = ["abstract_algebra","formal_logic", "high_school_biology", "high_school_mathematics", "high_school_us_history","human_sexuality","logical_fallacies", "philosophy"]
+MMLU_CATEGORIES = ["abstract_algebra","formal_logic","logical_fallacies", "philosophy"]
+#MMLU_CATEGORIES = ["abstract_algebra","formal_logic", "high_school_biology", "high_school_mathematics", "high_school_us_history","human_sexuality","logical_fallacies", "philosophy"]
+
 # MMLU_CATEGORIES = [
 #     "abstract_algebra", "anatomy", "astronomy", "business_ethics", "clinical_knowledge",
 #     "college_biology", "college_chemistry", "college_computer_science", "college_mathematics",
@@ -30,10 +33,15 @@ MMLU_CATEGORIES = ["abstract_algebra","formal_logic", "high_school_biology", "hi
 #     "philosophy", "prehistory", "professional_accounting", "professional_law", "professional_medicine",
 #     "public_relations", "security_studies", "sociology", "us_foreign_policy", "virology", "world_religions"
 # ]
-MMLU_QUESTIONS_PER_CATEGORY = 100
-WINOGRANDE_QUESTIONS_COUNT = 100
-MUSR_QUESTIONS_COUNT = 100
-SEED_KEY = 4675
+
+
+MMLU_PRO_CATEGORIES = ["Biology", "Business", "Chemistry", "ComputerScience", "Economics", "Engineering", "Health", "History", "Law", "Math", "Philosophy", "Physics", "Psychology", "Other"]
+
+MMLU_PRO_QUESTIONS_PER_CATEGORY = 300  # max?
+MMLU_QUESTIONS_PER_CATEGORY = 100 # 100 max
+WINOGRANDE_QUESTIONS_COUNT = 300 # max?
+MUSR_QUESTIONS_COUNT = 300 # 300 max
+SEED_KEY = 46756 # shuffle seed
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 CACHE_DIR = os.path.join(SCRIPT_DIR, "cache_dir")
