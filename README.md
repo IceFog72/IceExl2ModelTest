@@ -1,6 +1,6 @@
 # IceExl2ModelTest
 ![image](https://github.com/user-attachments/assets/9f1c71d5-2028-4889-9ae2-90be8f9f5f28)
-exl2 model tester (MMLU,Winogrande,HeLLaSWAG,MuSR,MMLU_PRO)
+exl2 model tester (using MMLU,Winogrande,HeLLaSWAG,MuSR,MMLU_PRO datasets)
 
 ```
 conda create -n IceExl2ModelTest python=3.11
