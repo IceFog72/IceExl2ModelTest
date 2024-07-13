@@ -1,6 +1,6 @@
 # IceExl2ModelTest
 
-exl2 model tester (MMLU,Winogrande,MuSR,MMLU_PRO)
+exl2 model tester (MMLU,Winogrande,HeLLaSWAG,MuSR,MMLU_PRO)
 
 ```
 conda create -n IceExl2ModelTest python=3.11
@@ -28,6 +28,5 @@ exl2_eval.py - old all in 1 version.
 If you editing code releted to promt- don't forget delete already generated questions from cache_dir.
 
 ![image](https://github.com/IceFog72/IceExl2ModelTest/assets/164350516/d3f80163-17c7-4137-b5c7-0ff40c3effb2)
-
 
 Feedback  [Thread about it in SillyTavern Discord](https://discord.com/channels/1100685673633153084/1259572507157991474)
