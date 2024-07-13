@@ -12,7 +12,8 @@ import matplotlib.pyplot as plt
 import sys
 
 from config import *
-from dataset_utils import cache_prompts, load_mmlu, load_winogrande, load_musr, load_mmlu_pro, generate_hash
+from dataset_utils import cache_prompts, load_mmlu, load_winogrande, load_musr, load_mmlu_pro, load_hellaswag, generate_hash
+
 from model_utils import get_model
 from evaluation_utils import evaluate_model
 
@@ -56,12 +57,12 @@ def run_evaluation(model, tokenizer, datasets, progress, task):
     return results
 
 def main():
-    # Existing MMLU
+    # MMLU
     mmlu_hash = generate_hash(MMLU_CATEGORIES, MMLU_QUESTIONS_PER_CATEGORY, SEED_KEY, PROMPT_FORMAT)
     mmlu_filename = os.path.join(CACHE_DIR, f"mmlu_prompts_{mmlu_hash}.json")
     mmlu_prompts = cache_prompts(mmlu_filename, load_mmlu, MMLU_CATEGORIES, MMLU_QUESTIONS_PER_CATEGORY, QA_SET, QA_SPLIT, CACHE_DIR, SEED_KEY, PROMPT_FORMAT)
 
-    # Winogrande and MuSR (unchanged)
+    # Winogrande and MuSR 
     winogrande_hash = generate_hash(WINOGRANDE_QUESTIONS_COUNT, SEED_KEY, PROMPT_FORMAT)
     winogrande_filename = os.path.join(CACHE_DIR, f"winogrande_prompts_{winogrande_hash}.json")
     winogrande_prompts = cache_prompts(winogrande_filename, load_winogrande, WINOGRANDE_QUESTIONS_COUNT, CACHE_DIR, SEED_KEY, PROMPT_FORMAT)
@@ -70,14 +71,24 @@ def main():
     musr_filename = os.path.join(CACHE_DIR, f"musr_prompts_{musr_hash}.json")
     musr_prompts = cache_prompts(musr_filename, load_musr, MUSR_QUESTIONS_COUNT, CACHE_DIR, SEED_KEY, PROMPT_FORMAT)
 
-    # New MMLU-Pro
+    #  MMLU-Pro
     mmlu_pro_hash = generate_hash(MMLU_PRO_CATEGORIES, MMLU_PRO_QUESTIONS_PER_CATEGORY, SEED_KEY, PROMPT_FORMAT)
     mmlu_pro_filename = os.path.join(CACHE_DIR, f"mmlu_pro_prompts_{mmlu_pro_hash}.json")
     mmlu_pro_prompts = cache_prompts(mmlu_pro_filename, load_mmlu_pro, MMLU_PRO_CATEGORIES, MMLU_PRO_QUESTIONS_PER_CATEGORY, CACHE_DIR, SEED_KEY, PROMPT_FORMAT)
 
-    # Combine all datasets
-    datasets = {"MMLU": mmlu_prompts, "Winogrande": winogrande_prompts, "MuSR": musr_prompts, "MMLU-Pro": mmlu_pro_prompts}
+    # HeLLaSWAG
+    hellaswag_hash = generate_hash(HELLASWAG_QUESTIONS_COUNT, SEED_KEY, PROMPT_FORMAT)
+    hellaswag_filename = os.path.join(CACHE_DIR, f"hellaswag_prompts_{hellaswag_hash}.json")
+    hellaswag_prompts = cache_prompts(hellaswag_filename, load_hellaswag, HELLASWAG_QUESTIONS_COUNT, CACHE_DIR, SEED_KEY, PROMPT_FORMAT)
 
+    # Combine all datasets
+    datasets = {
+        "HeLLaSWAG": hellaswag_prompts,
+        "Winogrande": winogrande_prompts,
+        "MuSR": musr_prompts,
+        "MMLU": mmlu_prompts,
+        "MMLU-Pro": mmlu_pro_prompts,
+    }
 
     all_results = {}
 

@@ -209,3 +209,26 @@ def format_mmlu_pro_question(question, options, answer, selected_format):
         text += f"\nAnswer is:\n"
     # Add other format options here if needed
     return text
+
+def format_hellaswag_question(ctx, endings, selected_format):
+    if selected_format == "none":
+        text = f"Context: {clean_unicode(ctx)}\n\nComplete the sentence with the most appropriate ending:\n\n"
+        for i, ending in enumerate(endings):
+            text += f"{chr(65+i)}: {clean_unicode(ending)}\n"
+        text += "\nAnswer is: "
+    # Add other format options here if needed
+    return text
+
+def load_hellaswag(questions_per_category, cache_dir, seed_key, selected_format):
+    print("Loading HeLLaSWAG dataset...")
+    dataset = load_dataset("hellaswag", split="validation", cache_dir=cache_dir).shuffle(seed=seed_key).select(range(questions_per_category))
+    
+    prompts = []
+    labels = []
+    with tqdm(total=len(dataset), desc="Processing HeLLaSWAG questions") as pbar:
+        for row in dataset:
+            prompts.append(format_hellaswag_question(row["ctx"], row["endings"], selected_format))
+            labels.append(int(row["label"]))  # Convert label to integer
+            pbar.update(1)
+
+    return {"prompts": prompts, "labels": labels}

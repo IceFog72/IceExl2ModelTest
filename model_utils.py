@@ -4,7 +4,6 @@ from exllamav2 import ExLlamaV2, ExLlamaV2Config, ExLlamaV2Cache_Q4, ExLlamaV2To
 
 def get_model(base, variant, gpu_split, batch_size, model_params):
     
-    
     model_dir = os.path.join(base, variant)
     config = ExLlamaV2Config()
     config.model_dir = model_dir

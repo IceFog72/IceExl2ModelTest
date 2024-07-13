@@ -11,16 +11,23 @@ def evaluate_model(model, tokenizer, prompts, labels, answer_logits, progress_ca
         logits_ans = logits[:, :, answer_logits]
         prob_ans = torch.softmax(logits_ans, dim=-1)
         predicted_label = torch.argmax(prob_ans).item()
-        score += prob_ans[0, 0, label]
+        
+        # Convert string label to integer if necessary
+        if isinstance(label, str):
+            label_index = ord(label) - ord('A')
+        else:
+            label_index = label
+        
+        score += prob_ans[0, 0, label_index]
         
         # Decode the predicted answer
         predicted_answer = chr(ord('A') + predicted_label)
         
         model_outputs.append({
             'prompt': prompt,
-            'correct_label': chr(ord('A') + label),
+            'correct_label': chr(ord('A') + label_index) if isinstance(label, int) else label,
             'predicted_label': predicted_answer,
-            'is_correct': predicted_label == label
+            'is_correct': predicted_label == label_index
         })
         
         # Call the progress callback if provided

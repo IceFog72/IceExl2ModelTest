@@ -2,11 +2,10 @@ import os
 
 # Configuration
 MODEL_BASE = "E:\\models"
-VARIANTS = ["Storm-7B-4.2bpw","IceSakeV12RP-7b-4.2bpw"]
+VARIANTS = ["IceSakeV12RP-7b-4.2bpw","Kunoichi-DPO-v2-7B-exl2-4_25"]
 MODEL_PARAMS = {
-    "Storm-7B-4.2bpw": { "max_seq_len": 2048, "rotary_embedding_base": 40000.0},
+    #"IceSakeV12RP-7b-4.2bpw": {"max_seq_len": 2048, "rotary_embedding_base": 40000.0},
     "IceSakeV12RP-7b-4.2bpw": {"max_seq_len": 2048, "rotary_embedding_base": 40000.0},
-    "IceLemonTeaRP-32k-7b-4.2bpw-h6-exl2": {"max_seq_len": 2048, "rotary_embedding_base": 40000.0},
     "Kunoichi-DPO-v2-7B-exl2-4_25": {"max_seq_len": 2048, "rotary_embedding_base": 40000.0},
     #"dolphin-2.9.3-mistral-7B-32k-4.2bpw-exl2": {"max_seq_len": 2048, "rotary_embedding_base": 100000.0}
 }
@@ -37,10 +36,13 @@ MMLU_CATEGORIES = ["abstract_algebra","formal_logic","logical_fallacies", "philo
 
 MMLU_PRO_CATEGORIES = ["Biology", "Business", "Chemistry", "ComputerScience", "Economics", "Engineering", "Health", "History", "Law", "Math", "Philosophy", "Physics", "Psychology", "Other"]
 
-MMLU_PRO_QUESTIONS_PER_CATEGORY = 300  # max?
+
+
+MMLU_PRO_QUESTIONS_PER_CATEGORY = 100  # max?
 MMLU_QUESTIONS_PER_CATEGORY = 100 # 100 max
-WINOGRANDE_QUESTIONS_COUNT = 300 # max?
-MUSR_QUESTIONS_COUNT = 300 # 300 max
+WINOGRANDE_QUESTIONS_COUNT = 100 # max?
+MUSR_QUESTIONS_COUNT = 100 # 300 max
+HELLASWAG_QUESTIONS_COUNT = 100  # Adjust as needed
 SEED_KEY = 46756 # shuffle seed
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
