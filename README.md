@@ -1,5 +1,5 @@
 # IceExl2ModelTest
-
+![image](https://github.com/user-attachments/assets/9f1c71d5-2028-4889-9ae2-90be8f9f5f28)
 exl2 model tester (MMLU,Winogrande,HeLLaSWAG,MuSR,MMLU_PRO)
 
 ```
@@ -26,7 +26,7 @@ Edit config.py and run main.py
 exl2_eval.py - old all in 1 version.
 
 If you editing code releted to promt- don't forget delete already generated questions from cache_dir.
-![image](https://github.com/user-attachments/assets/9f1c71d5-2028-4889-9ae2-90be8f9f5f28)
+
 
 
 
